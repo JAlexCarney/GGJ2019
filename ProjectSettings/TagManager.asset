@@ -7,6 +7,7 @@ TagManager:
   - Balloon
   - Danger
   - Balloon_Pickup
+  - Starter_Balloon
   layers:
   - Default
   - TransparentFX

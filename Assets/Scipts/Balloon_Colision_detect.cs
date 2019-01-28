@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Balloon_Colision_detect : MonoBehaviour
 {
-    public Sprite poped_sprite;
+    public GameObject pop_prefab;
 
     // called when this balloon hits something
     void OnCollisionEnter2D(Collision2D col)
@@ -13,8 +13,9 @@ public class Balloon_Colision_detect : MonoBehaviour
         if ( col.gameObject.tag == "Danger" )
         {
             // POP!
-            GetComponent<SpriteRenderer>().sprite = poped_sprite;
-            Destroy(gameObject, .5f);
+            GameObject pop = Instantiate(pop_prefab);
+            pop.transform.position = transform.position;
+            Destroy(gameObject, 0f);
             
         }
     }

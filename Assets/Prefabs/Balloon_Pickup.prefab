@@ -111,11 +111,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   balloon_colors:
-  - {fileID: 21300000, guid: 37f52bea646a28f4ba43005b3d3ed45e, type: 3}
   - {fileID: 21300000, guid: fd24995f8ea43a34ea0f7d50784d58e4, type: 3}
-  - {fileID: 21300000, guid: 74bf4bf0b0a24244d8aeb9ca9cfc7e47, type: 3}
+  - {fileID: 21300000, guid: 0ae601bed757a0348914a990648f0f50, type: 3}
+  - {fileID: 21300000, guid: e26793ae0fcdf8f4f935737cba22c4c8, type: 3}
   - {fileID: 21300000, guid: a48c55ad2b3619346878afef199f99b8, type: 3}
-  - {fileID: 21300000, guid: d95a6cedf42f9f64aa0f4a7ad3f15986, type: 3}
+  - {fileID: 21300000, guid: 74bf4bf0b0a24244d8aeb9ca9cfc7e47, type: 3}
+  - {fileID: 21300000, guid: edb70017850ced34b8c8d30c73b6c3c2, type: 3}
+  - {fileID: 21300000, guid: 465a31b57f9b402428e319e566a41f4f, type: 3}
+  - {fileID: 21300000, guid: 591a89f72577bfc45a0e47be7ea1d7f0, type: 3}
+  - {fileID: 21300000, guid: 1edcdfb6b7ce28945b620461a295e85a, type: 3}
+  - {fileID: 21300000, guid: 6229e7ec9c849ec4db8602010c8d5a1b, type: 3}
 --- !u!1001 &2208846415765104771
 PrefabInstance:
   m_ObjectHideFlags: 0

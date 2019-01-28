@@ -2,13 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Player_Movement : MonoBehaviour
 {
     public GameObject ballon_prefab;
     public GameObject game_over_prefab;
+    public GameObject balloon_prompt_prefab;
+    public GameObject starting_prompt;
+    public GameObject end_prefab;
+    public GameObject pickup_sound;
+    public GameObject pop_sound;
+
+    public GameObject text;
+
+    public int balloons_gathered;
 
     private bool is_over;
+    private bool is_end;
 
     private float max_speed;
     private float acceleration;
@@ -17,6 +28,9 @@ public class Player_Movement : MonoBehaviour
     private Animator animator;
     private bool facing_right;
 
+    private bool is_get;
+    private int get_counter;
+
     private List<GameObject> balloons;
 
 
@@ -24,12 +38,18 @@ public class Player_Movement : MonoBehaviour
     void Start()
     {
         is_over = false;
+        is_end = false;
 
         max_speed = 7.5f;
         acceleration = 4f;
         body = GetComponent<Rigidbody2D>();
         body.drag = 1f;
         body.angularDrag = 2f;
+
+        balloons_gathered = 0;
+
+        is_get = false;
+        get_counter = 0;
 
         animator = GetComponent<Animator>();
         facing_right = true;
@@ -50,11 +70,9 @@ public class Player_Movement : MonoBehaviour
                 GameObject game_over = Instantiate(game_over_prefab);
                 game_over.transform.position = transform.position + new Vector3(0, -3, 0);
                 Debug.Log("Game Over");
-                foreach (var balloon in balloons)
-                {
-                    //ballon_prefab.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
-                }
-                //body.constraints = RigidbodyConstraints2D.FreezeAll;
+                animator.Play("sad");
+                GameObject pop = Instantiate(pop_sound);
+                pop.transform.position = transform.position;
             }
             else
             {
@@ -63,6 +81,37 @@ public class Player_Movement : MonoBehaviour
                     Debug.Log("Restarting");
                     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                 }
+                foreach (var balloon in balloons)
+                {
+                    if (balloon)
+                        balloon.GetComponent<Rigidbody2D>().velocity = new Vector3(0, 0, 0);
+                }
+                body.velocity = new Vector3(0, 0, 0);
+            }
+        }
+        else if (balloons_gathered == 30 && !is_end)
+        {
+            end_prefab.SetActive(true);
+            is_end = true;
+        }
+        else if (is_get)
+        {
+            Input_Handle();
+            Update_Balloons();
+            if (get_counter == 30)
+            {
+                is_get = false;
+                get_counter = 0;
+                animator.SetBool("is_get", false);
+            }
+            else
+            {
+                animator.SetBool("is_get", true);
+                animator.SetBool("is_idle", false);
+                animator.SetBool("is_up", false);
+                animator.SetBool("is_down", false);
+                animator.SetBool("is_right", false);
+                get_counter++;
             }
         }
         else
@@ -96,6 +145,8 @@ public class Player_Movement : MonoBehaviour
         balloon_temp.GetComponent<SpriteRenderer>().sprite = balloon_color;
         balloons.Add(balloon_temp);
         Debug.Log(balloons.Count);
+        balloons_gathered++;
+        text.GetComponent<Text>().text = balloons_gathered.ToString();
     }
 
     bool Is_Balloon_Missing()
@@ -113,12 +164,29 @@ public class Player_Movement : MonoBehaviour
     // called when this Player hits something
     void OnTriggerEnter2D(Collider2D col)
     {
+        GameObject pickup = Instantiate(pickup_sound);
+        pickup.transform.position = transform.position;
         // is it a balloon?
         if (col.gameObject.tag == "Balloon_Pickup")
         {
             // Pick it up!
             Add_Balloon(col.gameObject.GetComponent<SpriteRenderer>().sprite, col.gameObject.transform.position);
             Destroy(col.gameObject, 0f);
+            GameObject balloon_prompt = Instantiate(balloon_prompt_prefab);
+            balloon_prompt.transform.position = new Vector3(0, -3, 0) + transform.position;
+            balloon_prompt.transform.parent = transform;
+            is_get = true;
+        }
+        // is it the starting balloon?
+        else if (col.gameObject.tag == "Starter_Balloon")
+        {
+            // Pick it up!
+            Add_Balloon(col.gameObject.GetComponent<SpriteRenderer>().sprite, col.gameObject.transform.position);
+            Destroy(col.gameObject, 0f);
+            GameObject balloon_prompt = Instantiate(starting_prompt);
+            balloon_prompt.transform.position = new Vector3(0, -3, 0) + transform.position;
+            balloon_prompt.transform.parent = transform;
+            is_get = true;
         }
     }
 
